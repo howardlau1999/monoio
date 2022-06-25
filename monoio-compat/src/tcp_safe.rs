@@ -121,10 +121,6 @@ impl tokio::io::AsyncWrite for TcpStreamCompat {
                 .arm_future(AsyncWriteRent::write(stream, owned_buf));
         }
 
-        // Check if the slice between different poll_write calls is the same
-        if buf.len() != this.last_write_len {
-            panic!("write slice length mismatch between poll_write");
-        }
         // the future must be armed
         let (ret, owned_buf) = match this.write_fut.poll(cx) {
             std::task::Poll::Ready(r) => r,
